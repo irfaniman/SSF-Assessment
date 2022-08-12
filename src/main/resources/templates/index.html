@@ -4,24 +4,30 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Crypto News</title>
 </head>
 <body>
 
-    <h1>Crypto News of the day</h1>
-
-    <div data-th-each="c : ${cypto}">
+    <h1>Crypto News of the Day</h1>
+    <div data-th-each = "n : ${news}">
         <table>
+            <input type="checkbox">
             <tr>
-                <td>
-                    <strong data-th-text="${c.fsym}"></strong>
-                    - 
-                    <span data-th-text="${c.tsyms}"></span>
-                </td>
+            <td style = "width: 30%;">
+                <img data-th-src="@${n.imageurl}" alt="">
+            </td>
+            
+            <td>
+                <span data-th-text="${n.id}"></span>
+                <span data-th-text="${n.published_on}"></span>
+                <span data-th-text="${n.title}"></span>
+                <span data-th-text="${n.body}"></span>
+                <span data-th-text="${n.tags}"></span>
+                <span data-th-text="${n.categories}"></span>
+            </td>
             </tr>
         </table>
-
+        <button type="submit">Save</button>
     </div>
-    
 </body>
 </html>

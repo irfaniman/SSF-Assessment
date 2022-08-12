@@ -9,24 +9,25 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CryptoRepository {
+public class NewsRepository {
     
+
     @Autowired
     @Qualifier("redislab")
     private RedisTemplate<String, String> redisTemplate;
 
-    // key & value for redis
-    public void save(String fysm, String payload) {
+
+    public void save(String id, String payload) {
         ValueOperations<String, String> valueOp = redisTemplate.opsForValue();
-        valueOp.set(fsym.toLowerCase(), payload, Duration.ofMinutes(cacheTime));
+        valueOp.set(id, payload);
     }
 
     // purpose is to get back what we save
-    public Optional<String> get(String city) {
+    public Optional<String> get(String id) {
         ValueOperations<String, String> valueOp = redisTemplate.opsForValue();
-        String value = valueOp.get(city.toLowerCase());
+        String value = valueOp.get(id);
         if (null == value)
-            return Optional.empty(); // empty box
-        return Optional.of(value); // box with data
+            return Optional.empty(); 
+        return Optional.of(value); 
     }
-}
+} 

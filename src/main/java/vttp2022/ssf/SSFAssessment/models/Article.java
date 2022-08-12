@@ -1,12 +1,15 @@
 package vttp2022.ssf.SSFAssessment.models;
 
+import java.io.StringReader;
+
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 
 public class Article {
     
     private String id ;
-    private String published_on;
+    private Integer published_on;
     private String title;
     private String url;
     private String imageurl;
@@ -17,8 +20,8 @@ public class Article {
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
-    public String getPublished_on() { return published_on; }
-    public void setPublished_on(String published_on) { this.published_on = published_on; }
+    public Integer getPublished_on() { return published_on; }
+    public void setPublished_on(Integer published_on) { this.published_on = published_on; }
     
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -42,7 +45,7 @@ public class Article {
     public static Article create(JsonObject jo) {
         Article a = new Article();
         a.setId(jo.getString("id"));
-        a.setPublished_on(jo.getString("published_on"));
+        a.setPublished_on(jo.getInt("published_on"));
         a.setTitle(jo.getString("title"));
         a.setUrl(jo.getString("url"));
         a.setImageurl(jo.getString("imageUrl"));
@@ -64,5 +67,12 @@ public class Article {
         .add("categories", categories)
         .build();
         }
+
+    public static Article create(String jsonStr) {
+        StringReader strReader = new StringReader(jsonStr);
+        JsonReader reader = Json.createReader(strReader);
+        return create(reader.readObject());
+
+    }
 
 }

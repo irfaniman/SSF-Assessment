@@ -49,4 +49,4 @@ public class AppConfig {
 
         return redisTemplate;
     }
-}
+} 

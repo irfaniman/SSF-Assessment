@@ -20,22 +20,24 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import vttp2022.ssf.SSFAssessment.models.Article;
-import vttp2022.ssf.SSFAssessment.repositories.CryptoRepository;
+import vttp2022.ssf.SSFAssessment.repositories.NewsRepository;
 
 @Service
 public class NewsService {
-    
+
+    @Autowired 
+    private NewsRepository newsRepo;
     private static final String URL = "https://min-api.cryptocompare.com/data/v2/news/";
-    
+        
     @Value("${CRYPTO_KEY}")
     private String key;
     private String lang = "EN";
 
-    public List<Article> getNews() {
+    public List<Article> getArticles() {
 
         String payload;
 
-        System.out.printf("Getting news information from cryptoCompare");
+        System.out.println("Getting news information from cryptoCompare");
 
         // Creating url with query string
         String url = UriComponentsBuilder.fromUriString(URL)
@@ -46,17 +48,17 @@ public class NewsService {
             // Create the GET request, get URL
             RequestEntity<Void> req = RequestEntity.get(url).build();
 
-            // Make the call to OpenWeatherMap
+            // Make the call to cryptoCompare
             RestTemplate template = new RestTemplate();
             ResponseEntity<String> resp;
-
-            /* try {
+    
+            try {
                 //Throws an exception if status code not in between 200-399
                 resp = template.exchange(req, String.class);
             } catch(Exception ex) {
                 System.err.printf("Error: %s\n", ex.getMessage());
                 return Collections.emptyList();
-            } */
+            } 
          
             // Get the payload and do something with it
             payload = resp.getBody();
@@ -65,90 +67,22 @@ public class NewsService {
             Reader strReader = new StringReader(payload);
             // Create a JsonReader from reader
             JsonReader jsonReader = Json.createReader(strReader);
-            // Read the payload ad Json Object
-            JsonObject weatherResult = jsonReader.readObject();
-            JsonArray cities = weatherResult.getJsonArray("weather");
+            // Read the payload as Json Object
+            JsonObject newsResult = jsonReader.readObject();
+            JsonArray data = newsResult.getJsonArray("Data");
             List<Article> list = new LinkedList<>();
-            for (int i = 0; i <cities.size(); i++ ) {
-                // weather [0]
-                JsonObject jo = cities.getJsonObject(i);
+            for (int i = 0; i <data.size(); i++ ) {
+                JsonObject jo = data.getJsonObject(i);
                 list.add(Article.create(jo));
+                
             }
-
-    }
-
-    return list;
-
-}
-
-
-
-
-    /* 
-    @Autowired
-    private CryptoRepository cryptoRepo;
-
-    public List<Crypto> getCrypto(String fsym, String tsyms) {
-
-    // Check if we have weather cached
-    Optional<String> opt = cryptoRepo.get(fsym);
-    String payload;
-    
-    System.out.printf(">>>> city: %s\n", city);
-
-    //Check if the box is empty
-    if(opt.isEmpty()) {
-
-        System.out.println("Getting weather from OpenWeatherMap");
-
-        // Create url with query string
-        String url = UriComponentsBuilder.fromUriString(URL)
-            .queryParam("fsym", crypto)
-            .queryParam("tsyms", currency)
-            .queryParam("")
-            .toUriString();
-
-            // Create the GET request, get URL
-            RequestEntity<Void> req = RequestEntity.get(url).build();
-
-            // Make the call to OpenWeatherMap
-            RestTemplate template = new RestTemplate();
-            ResponseEntity<String> resp; // from the response body, we are expecting string
-
-            try {
-                //Throws an exception if status code not in between 200-399
-                resp = template.exchange(req, String.class);
-            } catch(Exception ex) {
-                System.err.printf("Error: %s\n", ex.getMessage());
-                return Collections.emptyList();
-            }
-         
-            // Get the payload and do something with it
-            payload = resp.getBody();
-            System.out.println("payload: " + payload);
-
-            cryptoRepo.save(fsym, tsyms, payload);
-
-        } else {
-            // Retrieve the value for the box
-            payload = opt.get();
-            System.out.printf(">>>> cache %s\n", payload);
-        }
-
-        // Convert payload to JsonObject
-        // Convert String to a Reader
-        Reader strReader = new StringReader(payload);
-        // Create a JsonReader from reader
-        JsonReader jsonReader = Json.createReader(strReader);
-        // Read the payload ad Json Object
-        JsonObject weatherResult = jsonReader.readObject();
-        JsonArray cities = weatherResult.getJsonArray("weather");
-        List<Crypto> list = new LinkedList<>();
-        for (int i = 0; i <cities.size(); i++ ) {
-            // weather [0]
-            JsonObject jo = cities.getJsonObject(i);
-            list.add(Crypto.create(jo));
-        }
 
         return list;
-    } */
+        
+    }
+
+    public Optional<Article> getNewsById(String id) {
+        return null;
+    }
+
+}
